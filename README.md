@@ -1,2 +1,2 @@
 # Salesforce_Youtube-Projeto
-Projeto de integração entre a API do Youtube e um sistema Salesforce, disponibilizando criação e controle de canais, assim como disponibilizar e assistir vídeos não-listados.
+Projeto de integração entre a API do Youtube e um sistema Salesforce, disponibilizando criação e controle de canais, assim como mostrar e assistir vídeos não-listados.
