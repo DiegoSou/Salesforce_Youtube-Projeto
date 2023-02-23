@@ -1,0 +1,17 @@
+<apex:page standardController="Channel__c">
+    
+    <apex:includeLightning />
+    
+    <div id="auraComp" />
+    
+    <script>
+    	$Lightning.use("c:ChannelAssistantApp", function(){
+        	$Lightning.createComponent(
+            	"c:ChannelAssistant",
+                {},
+                "auraComp",
+                function () { console.log('Page component created') }
+            )
+        });
+    </script>
+</apex:page>

@@ -1,0 +1,37 @@
+<aura:component>
+    <aura:attribute type="Object" name="tempChannel"/>
+    <aura:attribute type="Integer" name="index"/>
+    <aura:attribute type="String" name="type"/>
+
+    <aura:registerEvent type="c:ClickAddChannelTile" name="clickAddTile"/>
+    <aura:registerEvent type="c:ClickAddChannelTile" name="clickRemoveTile"/>
+
+    <div class="slds-media slds-p-around_medium">
+        <div class="slds-media__figure">
+            <a href="{!v.tempChannel.Channel_URL__c}" class="slds-avatar slds-avatar_circle slds-avatar_large">
+                <img alt="{!v.tempChannel.Name}" src="{!v.tempChannel.Thumbnail__c}" title="{!v.tempChannel.Name}" />
+            </a>
+        </div>
+        <div class="slds-media__body channelCard">
+          <div class="slds-page-header__name">
+            <div class="slds-page-header__name-title">
+                <span class="slds-page-header__title slds-truncate" title="{!v.tempChannel.Name}">{!v.tempChannel.Name}</span>
+            </div>
+          </div>
+          <p class="slds-page-header__name-meta">{!v.tempChannel.Description__c}</p>
+        </div>
+
+        <aura:if isTrue="{!v.type == 'Add'}">
+            <div class="slds-m-left_large">
+                <lightning:button variant="brand" label="Add" title="Add" onclick="{!c.addChannel}"/>
+            </div>
+        </aura:if>
+
+        <aura:if isTrue="{!v.type == 'Remove'}">
+            <div class="slds-m-left_large">
+                <lightning:button variant="destructive" label="Remove" title="Remove" onclick="{!c.removeChannel}"/>
+            </div>
+        </aura:if>
+
+    </div>
+</aura:component>

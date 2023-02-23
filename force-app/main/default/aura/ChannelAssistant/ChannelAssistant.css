@@ -1,0 +1,11 @@
+.THIS .dFlex{
+    display: flex;
+}
+
+.THIS .fullLarge{
+    width: max-content;
+}
+
+.THIS .alignMiddle{
+    vertical-align: middle;
+}
