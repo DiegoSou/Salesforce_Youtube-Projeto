@@ -2,27 +2,33 @@ public class ChannelDomain
 {
     public Channel__c channelRecord{get; private set;}
 
-    public void constructChannelFromWrapper(YoutubeIntegrationWrapper.Item item)
+    public ChannelDomain constructChannelFromWrapper(YoutubeIntegrationAbstractItem item)
     {
         Channel__c channel = new Channel__c();
 
-        if(item.snippet != null)
+        if(item.getSnippet())
         {
-            channel.Name = item.snippet.title;
-            channel.Channel_URL__c = 'https://youtube.com/channel/' + item.snippet.channelId;
-            channel.ChannelYtbID__c = item.snippet.channelId;
-            channel.Description__c = item.snippet.description;
-            channel.Thumbnail__c = item.snippet.thumbnails.get('default').get('url');
+            YoutubeIntegrationSearchWrapper.Item searchItem = (YoutubeIntegrationSearchWrapper.Item) item;
+
+            channel.Name = searchItem.snippet.title;
+            channel.Channel_URL__c = 'https://youtube.com/channel/' + searchItem.snippet.channelId;
+            channel.ChannelYtbID__c = searchItem.snippet.channelId;
+            channel.Description__c = searchItem.snippet.description;
+            channel.Thumbnail__c = searchItem.snippet.thumbnails.get('default').get('url');
         }
 
-        if(item.statistics != null)
+        if(item.getStatictics())
         {
-            channel.ChannelYtbID__c = item.customChannelId;
-            channel.Subscriber_Counts__c = item.statistics.subscriberCount;
-            channel.Video_Counts__c = item.statistics.videoCount;
-            channel.View_Counts__c = item.statistics.viewCount;
+            YoutubeIntegrationResultWrapper.Item resultItem = (YoutubeIntegrationResultWrapper.Item) item;
+
+            channel.ChannelYtbID__c = resultItem.id;
+            channel.Subscriber_Counts__c = resultItem.statistics.subscriberCount;
+            channel.Video_Counts__c = resultItem.statistics.videoCount;
+            channel.View_Counts__c = resultItem.statistics.viewCount;
         }
 
         this.channelRecord = channel;
+
+        return this;
     }
 }

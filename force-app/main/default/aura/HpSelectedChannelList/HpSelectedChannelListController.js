@@ -64,7 +64,6 @@
             component.set("v.hasSave", true);
             setTimeout(() => {
                 component.set("v.hasSave", false);
-                component.set("v.messageOnSave", "");
             }, 3000);
         }
     }

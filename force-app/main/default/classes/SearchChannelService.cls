@@ -10,10 +10,10 @@ public without sharing class SearchChannelService
             HttpResponse response = YoutubeIntegrationRequest.searchChannelListByParam(searchParam, maxResults);
             if(response.getStatusCode() != 200) { throw new YoutubeIntegrationRequest.YoutubeIntegrationRequestException('Callout request error. Method: SearchChannels, Status Code: ' + response.getStatusCode()); }
 
-            YoutubeIntegrationWrapper searchData =  YoutubeIntegrationWrapper.parse(response.getBody());
+            YoutubeIntegrationSearchWrapper searchData =  YoutubeIntegrationSearchWrapper.parse(response.getBody());
 
             // Associa cada item com o objeto Channel__c
-            for(YoutubeIntegrationWrapper.Item item : searchData.items)
+            for(YoutubeIntegrationSearchWrapper.Item item : searchData.items)
             {
                 ChannelDomain channelFromResponse = new ChannelDomain();
                 channelFromResponse.constructChannelFromWrapper(item);

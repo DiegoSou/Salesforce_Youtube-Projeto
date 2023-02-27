@@ -26,6 +26,26 @@ public class YoutubeIntegrationRequest
         return http.send(request);
     }
 
+    public static HttpResponse getVideoListByChannelId(String channelYtbId)
+    {
+        Http http = new Http();
+        HttpRequest request = new HttpRequest();
+
+        YoutubeIntegration__mdt videoListMdt = YoutubeIntegrationSelector.getEndpoint('VideoList');
+
+        String endpoint = (videoListMdt.Endpoint__c)
+        .replace('{part}', 'snippet')
+        .replace('{type}', 'video')
+        .replace('{channelId}', channelYtbId)
+        .replace('{maxResults}', '50')
+        .replace('{key}', KEY);
+
+        request.setEndpoint(endpoint);
+        request.setMethod(videoListMdt.Method__c);
+
+        return http.send(request);  
+    }
+
     public static HttpResponse getChannelListByIds(String commaSeparatedIds)
     {
         Http http = new Http();

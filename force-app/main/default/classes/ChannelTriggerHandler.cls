@@ -21,7 +21,7 @@ public class ChannelTriggerHandler extends TriggerHandler
         Id jobId = System.enqueueJob(channelsQueueable);
 
         AsyncApexJob info = [SELECT Status, NumberOfErrors FROM AsyncApexJob WHERE Id=:jobId];
-        System.debug(info);
+        System.debug('ChannelTriggerHandler - AsyncApexJob: ' + info);
     }
 
 }
