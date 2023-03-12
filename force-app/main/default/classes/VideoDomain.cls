@@ -2,7 +2,7 @@ public class VideoDomain
 {
    public Video__c videoRecord{get; set;}
 
-   public VideoDomain constructVideoFromWrapper(YoutubeIntegrationAbstractItem item, String channelId)
+   public VideoDomain constructVideoFromWrapper(YoutubeIntegrationAbstractItem item)
    {
        Video__c video = new Video__c();
 
@@ -13,10 +13,9 @@ public class VideoDomain
            YoutubeIntegrationSearchWrapper.Item searchItem = (YoutubeIntegrationSearchWrapper.Item) item;
 
            video.VideoYtbId__c = searchItem.id.get('videoId');
-           video.Name = searchItem.snippet.title;
+           video.Title__c = searchItem.snippet.title;
            video.Video_URL__c = 'https://youtube.com/video/' + searchItem.id.get('videoId');
-           video.Channel__c = channelId;
-           video.Publish_Date__c = searchItem.snippet.publishedAt;
+           video.Publish_Date__c = searchItem.snippet.publishedAt.format() ;
            video.Description__c = searchItem.snippet.description;
            video.Thumbnail__c = searchItem.snippet.thumbnails.get('default').get('url');
        }

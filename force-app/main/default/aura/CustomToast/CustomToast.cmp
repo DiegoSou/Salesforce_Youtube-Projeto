@@ -8,7 +8,7 @@
         <span class="slds-assistive-text">success</span>
         <span class="slds-icon_container slds-icon-utility-success slds-m-right_small slds-no-flex slds-align-top"
           title="Description of icon when needed">
-          <lightning:icon alternativeText="success" iconName="utility:check" />
+          <lightning:icon alternativeText="success" iconName="action:description" />
         </span>
 
         <div class="slds-notify__content">
@@ -22,7 +22,7 @@
         <span class="slds-assistive-text">error</span>
         <span class="slds-icon_container slds-icon-utility-error slds-m-right_small slds-no-flex slds-align-top"
           title="Description of icon when needed">
-          <lightning:icon alternativeText="error" iconName="utility:close" />
+          <lightning:icon alternativeText="error" iconName="action:close" />
         </span>
         
         <div class="slds-notify__content">

@@ -4,7 +4,8 @@ public class SelectedChannelAdapter extends APP_AbstractAdapter
     public override Map<String, String> configureMethodCatalog()
     {
         return new Map<String, String> {
-            'callSaveChannels' => 'SelectedChannelAdapter.CallSaveChannels_ADP'
+            'callSaveChannels' => 'SelectedChannelAdapter.CallSaveChannels_ADP',
+            'callUpdateChannel' => 'SelectedChannelAdapter.CallUpdateChannel_ADP'
         };
     }
 
@@ -12,7 +13,8 @@ public class SelectedChannelAdapter extends APP_AbstractAdapter
     public override Map<String, Object> configureParamsCatalog()
     {
         return new Map<String, Object> {
-            'callSaveChannels' => (new Map<String, String> { 'listObjJson' => 'Object' })
+            'callSaveChannels' => (new Map<String, String> { 'listObjJson' => 'Object' }),
+            'callUpdateChannel' => (new Map<String, String> { 'recordId' => 'String' })
         };
     }
 
@@ -23,6 +25,16 @@ public class SelectedChannelAdapter extends APP_AbstractAdapter
         {
             this.response = new SelectedChannelService().callSaveChannels(
                 (List<Object>) params.get('listObjJson').getValue()
+            );
+        }
+    }
+
+    public class CallUpdateChannel_ADP extends APP_AbstractAdapter.CallerMethod
+    {
+        public override void callMethod(Map<String, APP_AbstractAdapter.ParameterMethod> params)
+        {
+            this.response = new SelectedChannelService().callUpdateChannel(
+                (String) params.get('recordId').getValue()
             );
         }
     }

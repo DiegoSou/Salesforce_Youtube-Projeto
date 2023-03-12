@@ -1,7 +1,7 @@
 <aura:component controller="SelectedChannelService">
 
     <!-- Subscribe message channel to inform that is a caller component -->
-    <lightning:messageChannel type="CallServiceChannel__c" onMessage="{!c.handleResponse}"/>
+    <lightning:messageChannel type="CallServiceChannel__c" onMessage="{!c.handleResponse}" scope="COMPONENT"/>
     <!-- Fires return event through Message Channel, if no recordId, means that anyone was returned so it save -->
     <lightning:messageChannel type="ChannelNotificationChannel__c" aura:id="channelMessageChannel"/>
 
@@ -25,12 +25,12 @@
             </aura:if>
         </aura:iteration>
         
-        <button id="saveSelectedListBtn" class="slds-button slds-button_outline-brand" onclick="{!c.saveSelectedList}" style="{!v.toggleSaveButtonStyle}">Save</button>  
+        <button class="slds-button slds-button_outline-brand saveSelectedListBtn" onclick="{!c.saveSelectedList}" style="{!v.toggleSaveButtonStyle}">Save</button>  
     </article>
 
     <aura:if isTrue="{!v.hasSave}">
         <c:CustomToast message="{!v.messageOnSave}" variant="success"/>
     </aura:if>
 
-    <c:callAppService aura:id="callAppService"/>
+    <c:callAppService aura:id="callAppService" cmp="hp-selected-channel-list"/>
 </aura:component>

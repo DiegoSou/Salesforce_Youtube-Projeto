@@ -63,5 +63,5 @@
         </div>
     </article>
 
-    <c:callAppService aura:id="callAppService"/>
+    <c:callAppService aura:id="callAppService" cmp="hp-search-channel"/>
 </aura:component>

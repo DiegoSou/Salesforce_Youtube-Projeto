@@ -8,7 +8,7 @@
 
     <div class="slds-media slds-p-around_medium">
         <div class="slds-media__figure">
-            <a href="{!v.tempChannel.Channel_URL__c}" class="slds-avatar slds-avatar_circle slds-avatar_large">
+            <a href="{!v.tempChannel.Channel_URL__c}" class="slds-avatar slds-avatar_circle slds-avatar_large" target="_blank">
                 <img alt="{!v.tempChannel.Name}" src="{!v.tempChannel.Thumbnail__c}" title="{!v.tempChannel.Name}" />
             </a>
         </div>

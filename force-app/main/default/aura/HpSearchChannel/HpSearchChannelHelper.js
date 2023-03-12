@@ -15,7 +15,8 @@
     	let passRecord = helper.constructClickTileEvent(component, '', '', 'passRecord');
         
         component.set('v.displaysListChannel', []);  
-        component.set('v.foundChannelList', []);           
+        component.set('v.foundChannelList', []);
+        component.set('v.searchParam', '');       
         passRecord.fire();
     }
 })

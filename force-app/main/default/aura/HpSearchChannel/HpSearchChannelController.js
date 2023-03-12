@@ -6,16 +6,25 @@
     },
 
     handleResponse : function(component, event, helper)
-    {
-        let foundList = component.get("v.foundChannelList");
-        let dataList = JSON.parse(event.getParam("response"));
-
-        dataList.forEach((channel) => {
-            foundList.push({ [channel.ChannelYtbID__c] : channel })
-        });
-
-        component.set('v.foundChannelList', foundList);
-        component.set('v.displaysListChannel', dataList);
+    { 
+        let response = event.getParam('response');
+        
+        if(response.from = 'hp-search-channel')
+        {   
+            if(response.data)
+            {
+                let foundList = component.get("v.foundChannelList");
+                
+                let data = JSON.parse(response.data);
+    
+                data.forEach((channel) => {
+                    foundList.push({ [channel.ChannelYtbID__c] : channel })
+                });
+    
+                component.set('v.foundChannelList', foundList);
+                component.set('v.displaysListChannel', data);
+            }
+        }
     },
     
     clickSearch : function(component, event, helper) 

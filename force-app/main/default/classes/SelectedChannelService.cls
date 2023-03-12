@@ -1,6 +1,6 @@
 public without sharing class SelectedChannelService {
     
-    public class SelectedChannelServiceException extends Exception{}
+    public class SelectedChannelServiceExcpt extends APP_UserExceptionType {}
 
     public String callSaveChannels(List<Object> listObjJson)
     {
@@ -20,39 +20,62 @@ public without sharing class SelectedChannelService {
         List<Channel__c> existingRecords = YoutubeIntegrationSelector.getChannelsByYtbID(channelByYoutubeId.keySet());
         
         // Associa o Id do registro encontrado ao Id do registro que está para ser inserido.
-        for(Channel__c item : existingRecords)
-        {
+        for(Channel__c item : existingRecords) {
             channelByYoutubeId.get(item.ChannelYtbID__c).Id = item.Id;
         }
 
-        try 
+        saveChannels(channelByYoutubeId.values());
+        return 'saving';
+    }
+
+    public String callUpdateChannel(String recordId)
+    {
+        System.debug('SelectedChannelService - callUpdateChannel: ' + recordId);
+
+        // Seleciona o objeto com o Id
+        Channel__c record = YoutubeIntegrationSelector.getChannelsByID(new Set<Id> { Id.valueOf(recordId) })[0];
+
+        // To-do: comparar campo de ultima atualização, ao invés do campo Salesforce
+        if(record.LastModifiedDate.addHours(1) > Datetime.now()) { throw new SelectedChannelServiceExcpt().exception('Wait at least 1 hour to request another update.', false); }
+        
+        // Pega as estatísticas do canal através da request
+        HttpResponse response = YoutubeIntegrationRequest.getChannelListByIds(record.ChannelYtbID__c);
+        if(response.getStatusCode() != 200) { throw new YoutubeIntegrationRequest.YoutubeIntegrationRequestException('Callout request error. Method: ChannelList, Status Code: ' + response.getStatusCode()); }
+
+        YoutubeIntegrationResultWrapper channelData = YoutubeIntegrationResultWrapper.parse(response.getBody());
+
+        // Atualiza o objeto que foi pego no select
+        for(YoutubeIntegrationResultWrapper.Item item : channelData.items)
         {
-            saveChannels(channelByYoutubeId.values());
-            return 'success';
-        } 
-        catch(Exception e)
-        {
-            System.debug(e.getMessage());
-            return e.getMessage();
+            ChannelDomain channelDomain = new ChannelDomain().constructChannelFromWrapper(item);
+
+            record.View_Counts__c = channelDomain.channelRecord.View_Counts__c;
+            record.Subscriber_Counts__c = channelDomain.channelRecord.Subscriber_Counts__c;
+            record.Video_Counts__c = channelDomain.channelRecord.Video_Counts__c;
         }
+
+        saveChannels(new List<Channel__c>{ record });
+        return 'Record just start update.';
     }
     
+    // DML's
+    // upsert nos registros
     private void saveChannels(List<Channel__c> channelList)
     {
         String errorString = '';
 
         Database.UpsertResult[] results = Database.upsert(channelList, true);
 
-        for(Database.UpsertResult ur : results)
+        for(Database.UpsertResult upResult : results)
         {
-            if(ur.isSuccess()) { continue; }
+            if(upResult.isSuccess()) { continue; }
 
-            for(Database.Error error : ur.getErrors())
+            for(Database.Error error : upResult.getErrors())
             {
                 errorString += error.getMessage() + '\n';
             }
         }
 
-        if(errorString != '') { throw new SelectedChannelServiceException(errorString); }
+        if(errorString != '') { throw new SelectedChannelServiceExcpt().exception(errorString, true); }
     }
 }

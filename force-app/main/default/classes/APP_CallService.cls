@@ -1,6 +1,5 @@
-public class APP_CallService {
-    public class APP_CallServiceException extends Exception{}
-
+public class APP_CallService 
+{
     @AuraEnabled
     public static String callService(String className, String methodName, String paramsNameTypeValueJson)
     {
@@ -20,7 +19,14 @@ public class APP_CallService {
         }
         catch (Exception e)
         {
-            throw new APP_CallServiceException(e.getMessage());
+            // debug for administrators
+            System.debug(e.getMessage());
+
+            // user is allowed to view, the call service component notify the error
+            if(e instanceof APP_UserExceptionType.APP_CustomException) { throw  e; }
+            
+            // the json response is passed as null
+            return null;
         }
     }
 }

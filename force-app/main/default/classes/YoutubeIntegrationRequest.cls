@@ -26,26 +26,6 @@ public class YoutubeIntegrationRequest
         return http.send(request);
     }
 
-    public static HttpResponse getVideoListByChannelId(String channelYtbId)
-    {
-        Http http = new Http();
-        HttpRequest request = new HttpRequest();
-
-        YoutubeIntegration__mdt videoListMdt = YoutubeIntegrationSelector.getEndpoint('VideoList');
-
-        String endpoint = (videoListMdt.Endpoint__c)
-        .replace('{part}', 'snippet')
-        .replace('{type}', 'video')
-        .replace('{channelId}', channelYtbId)
-        .replace('{maxResults}', '50')
-        .replace('{key}', KEY);
-
-        request.setEndpoint(endpoint);
-        request.setMethod(videoListMdt.Method__c);
-
-        return http.send(request);  
-    }
-
     public static HttpResponse getChannelListByIds(String commaSeparatedIds)
     {
         Http http = new Http();
@@ -64,5 +44,48 @@ public class YoutubeIntegrationRequest
         request.setMethod(channelListMdt.Method__c);
         
         return http.send(request);
+    }
+
+    public static HttpResponse searchVideoListByParam(String param, String channelYtbId)
+    {
+        Http http = new Http();
+        HttpRequest request = new HttpRequest();
+
+        String formattedParam = param.replaceAll(' ', '%20'); 
+
+        YoutubeIntegration__mdt videoListMdt = YoutubeIntegrationSelector.getEndpoint('VideoList');
+
+        String endpoint = (videoListMdt.Endpoint__c)
+        .replace('{part}', 'snippet')
+        .replace('{type}', 'video')
+        .replace('{channelId}', channelYtbId)
+        .replace('{maxResults}', '25')
+        .replace('{key}', KEY)
+        + ('&q=' + formattedParam);
+        
+        request.setEndpoint(endpoint);
+        request.setMethod(videoListMdt.Method__c);
+
+        return http.send(request);
+    }
+
+    public static HttpResponse getVideoListByChannelId(String channelYtbId)
+    {
+        Http http = new Http();
+        HttpRequest request = new HttpRequest();
+
+        YoutubeIntegration__mdt videoListMdt = YoutubeIntegrationSelector.getEndpoint('VideoList');
+
+        String endpoint = (videoListMdt.Endpoint__c)
+        .replace('{part}', 'snippet')
+        .replace('{type}', 'video')
+        .replace('{channelId}', channelYtbId)
+        .replace('{maxResults}', '50')
+        .replace('{key}', KEY);
+
+        request.setEndpoint(endpoint);
+        request.setMethod(videoListMdt.Method__c);
+
+        return http.send(request);  
     }
 }

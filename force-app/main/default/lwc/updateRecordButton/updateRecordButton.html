@@ -1,0 +1,13 @@
+<template>
+    <lightning-layout>
+        <lightning-layout-item class="slds-align_absolute-center" size="12">
+            <button class="slds-button slds-button_brand width-fill" onclick={handleUpdateRecordClick}>Update / Reload Record</button>
+        </lightning-layout-item>
+
+        <lightning-layout-item size="12" if:true={loading}>
+            <lightning-spinner alternative-text="Loading" size="medium"></lightning-spinner>
+        </lightning-layout-item>
+    </lightning-layout>
+
+    <c-call-app-service cmp="update-record-button"></c-call-app-service>
+</template>

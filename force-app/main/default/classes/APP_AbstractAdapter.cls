@@ -53,7 +53,7 @@ public abstract class APP_AbstractAdapter
         this.setMethodCatalog();
         this.setParamsCatalog();
 
-        if(!this.methodNameCatalog.containsKey(methodName)) { throw new APP_AbstractAdapterException('Método não existe ou não informado.'); }
+        if(!this.methodNameCatalog.containsKey(methodName)) { throw new APP_AbstractAdapterException('Método não existe ou não informado: ' + methodName); }
         
         // "searchChannels : [{ 'name' : 'channelId', 'type' : 'String', 'value' : '12345' }]"
         // parâmetros definidos na adapter
@@ -65,8 +65,8 @@ public abstract class APP_AbstractAdapter
 
         for(ParameterMethod param : myParams)
         {
-            if(paramsCatalog.get(param.name) == null) { throw new APP_AbstractAdapterException('Parâmetro não existe ou não foi informado'); }
-            if(paramsCatalog.get(param.name) != param.type) { throw new APP_AbstractAdapterException('Tipo incorreto do parâmetro'); }
+            if(paramsCatalog.get(param.name) == null) { throw new APP_AbstractAdapterException('Parâmetro não existe ou não foi informado: ' + param.name); }
+            if(paramsCatalog.get(param.name) != param.type) { throw new APP_AbstractAdapterException('Tipo incorreto do parâmetro: ' + param.type); }
 
             paramMethodByName.put(param.name, param);
         }
