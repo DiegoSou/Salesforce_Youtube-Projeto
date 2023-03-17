@@ -1,11 +1,13 @@
 <template>
     <c-call-app-service cmp="video-search-results"></c-call-app-service>
 
-    <div class="slds-grid slds-wrap">
-        <template for:each={videoList} for:item="videoItem" for:index="videoIndex">
-            <article class="slds-col slds-size_6-of-12" key={videoItem.Id}>
-                <c-video-tile video={videoItem}></c-video-tile>
-            </article>
-        </template>
+    <div class="slds-scrollable" style={scrollHeight}>
+        <div class="slds-grid slds-wrap">
+            <template for:each={videoList} for:item="videoItem" for:index="videoIndex">
+                <article class="slds-col slds-size_6-of-12" key={videoItem.VideoYtbId__c}>
+                    <c-video-tile video={videoItem} onadded={handleAdded}></c-video-tile>
+                </article>
+            </template>
+        </div>
     </div>
 </template>

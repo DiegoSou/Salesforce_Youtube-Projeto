@@ -22,11 +22,15 @@
 
         <div class="slds-col slds-size_12-of-12">
             <div class="slds-p-around_medium">
-                <template if:false={isNotEmpty}>
+                <template if:true={emptyResults}>
                     <c-illustration-any></c-illustration-any>
+                </template>             
+                
+                <template if:false={emptyResults}>
+                    <c-video-search-save-button onsave={handleSaveResults}></c-video-search-save-button>
                 </template>
-    
-                <c-video-search-results onsearchresult={handleSearchResult}></c-video-search-results>
+
+                <c-video-search-results onisnotempty={setIsNotEmpty}></c-video-search-results>
             </div>
         </div>
     </div>

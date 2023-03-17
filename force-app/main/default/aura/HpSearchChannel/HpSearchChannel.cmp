@@ -8,7 +8,7 @@
     <!-- Attributes -->
     <aura:attribute type="String" name="searchParam" default=""/>
     <aura:attribute type="List" name="foundChannelList" default="[]"/>
-    <aura:attribute type="List" name="displaysListChannel"/>
+    <aura:attribute type="List" name="displaysListChannel" default="[]"/>
     <aura:attribute type="String" name="toggleMaxResultsStyle" default="display:none"/>
     <aura:attribute type="Integer" name="maxResults" default="25"/>
     <aura:attribute type="String" name="windowHeight"/>

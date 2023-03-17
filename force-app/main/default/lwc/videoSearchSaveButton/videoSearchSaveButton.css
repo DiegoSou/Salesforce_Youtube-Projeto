@@ -1,0 +1,15 @@
+.width-full{
+    width: 100%;
+    height: 100%;
+}
+.save-select-background{
+    background-color: #62b7ed;
+}
+
+.save-selected-height{
+    height: 1.8rem;
+}
+
+.text-middle{
+    padding: 0.4rem;
+}

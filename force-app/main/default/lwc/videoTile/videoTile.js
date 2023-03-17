@@ -16,4 +16,16 @@ export default class VideoTile extends LightningElement
             description : this.video.Description__c
         };
     }
+
+    textAddOrAdded = 'Add';
+    clickAdd(event)
+    {
+        event.currentTarget.classList.toggle('slds-button_brand');
+        event.currentTarget.classList.toggle('slds-button_success');
+
+        this.textAddOrAdded = this.textAddOrAdded == 'Add' ? 'Added' : 'Add';
+
+        let addEvent = new CustomEvent('added', { detail : { recordAdded : this.video} });
+        this.dispatchEvent(addEvent);
+    }
 }

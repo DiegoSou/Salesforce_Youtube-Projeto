@@ -26,16 +26,17 @@ public class YoutubeIntegrationRequest
         return http.send(request);
     }
 
-    public static HttpResponse getChannelListByIds(String commaSeparatedIds)
+    public static HttpResponse getResultsListByIds(String commaSeparatedIds, String typeRecords)
     {
         Http http = new Http();
         HttpRequest request = new HttpRequest();
         
         commaSeparatedIds = commaSeparatedIds.replaceAll(',', '%2C'); // 1234556,543221 => 1234556%2C543221
 
-        YoutubeIntegration__mdt channelListMdt = YoutubeIntegrationSelector.getEndpoint('ChannelList');
+        YoutubeIntegration__mdt channelListMdt = YoutubeIntegrationSelector.getEndpoint('ResultsList');
 
         String endpoint = (channelListMdt.Endpoint__c)
+        .replace('{typeForRecords}', typeRecords)
         .replace('{part}', 'statistics')
         .replace('{id}', commaSeparatedIds)
         .replace('{key}', KEY);

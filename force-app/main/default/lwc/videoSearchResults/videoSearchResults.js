@@ -3,9 +3,13 @@ import { LightningElement, api, track, wire } from 'lwc';
 import { subscribe, MessageContext } from 'lightning/messageService';
 import CallServiceChannel from '@salesforce/messageChannel/CallServiceChannel__c';
 
+const windowScrollHeight = 'max-height: ' + (window.innerHeight - (window.innerHeight*0.4)) + 'px';
+
 export default class VideoSearchResults extends LightningElement 
 {
+    scrollHeight = windowScrollHeight;
     @track videoList;
+    @track videosAddedList;
     
     @wire(MessageContext) messageContext;
 
@@ -20,7 +24,7 @@ export default class VideoSearchResults extends LightningElement
     }
 
     @api search(channelId, searchParam)
-    {
+    {   
         let callService = this.template.querySelector('c-call-app-service');
 
         let params = [
@@ -39,24 +43,45 @@ export default class VideoSearchResults extends LightningElement
         callService.call('SearchVideoAdapter', 'searchVideos', JSON.stringify(params));
     }
 
+    @api save()
+    {
+        console.log('Save!');
+        this.videoList = [];
+    }
+
+    // Handles the call service search videos
     handleSearch(response)
     {
         let callService = this.template.querySelector('c-call-app-service');
 
         if(response.from == 'video-search-results')
         {
+            // Fires search event to communicate the search tab component
             if(response.data)
             {
                 this.videoList = JSON.parse(response.data);
                 
-                this.dispatchEvent(new CustomEvent('searchresult', { detail : this.videoList }));
+                // Check if is Empty List
+                if(Array.isArray(this.videoList) && this.videoList.length > 0)
+                {
+                    this.dispatchEvent(new CustomEvent('isnotempty'));
+                }
             }
 
+            // Show the error toast 
             if(response.error)
             {
-                console.log('Erro');
+                let exceptionData = JSON.parse(response.error);
+
+                callService.notificationToast(exceptionData.title, exceptionData.message, exceptionData.view);
             }
         }
+    }
+
+    // Handles the click add on tile
+    handleAdded(event)
+    {
+        console.log('Added!');
     }
 }
 

@@ -3,13 +3,9 @@ import { LightningElement, track, api } from 'lwc';
 export default class VideoSearchTab extends LightningElement 
 {
     @api recordId;
-    @track videoList;
+    @track emptyResults = true;
 
-    get isNotEmpty()
-    {
-        return Array.isArray(this.videoList) && this.videoList.length > 0;
-    }
-
+    // Call search results method from searchResultsCmp
     searchVideos()
     {
         let searchResultsComp = this.template.querySelector('c-video-search-results');
@@ -21,15 +17,25 @@ export default class VideoSearchTab extends LightningElement
         }
     }
 
-    handleSearchResult(event)
+    // Call save results method from searchResultsCmp
+    handleSaveResults()
     {
-        this.videoList = event.detail;
-        console.log(JSON.stringify(this.videoList));
+        this.emptyResults = true;
+
+        let searchResultsComp = this.template.querySelector('c-video-search-results');
+        searchResultsComp.save();
     }
 
+    // Clear param
     clearSearch()
     {
         let searchParam = this.template.querySelector('input');
         searchParam.value = '';
+    }
+
+    // Handle event if has results on search
+    setIsNotEmpty()
+    {
+        this.emptyResults = false;
     }
 }

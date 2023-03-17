@@ -40,7 +40,8 @@ public class VideosFromChannelsBatchable implements Database.Batchable<sObject>,
             for(YoutubeIntegrationSearchWrapper.Item responseVideoItem : wrappedResponse.items)
             {
                 // Video Domain identify that is a Search, so it construct the records according with
-                VideoDomain videoFromResponse = new VideoDomain().constructVideoFromWrapper(responseVideoItem, channel.Id);
+                VideoDomain videoFromResponse = new VideoDomain().constructVideoFromWrapper(responseVideoItem);
+                videoFromResponse.videoRecord.Channel__c = channel.Id;
                 
                 videoByYtbId.put(
                     videoFromResponse.videoRecord.VideoYtbID__c, 

@@ -24,7 +24,7 @@ public class ChannelUpdateQueueable implements Queueable, Database.AllowsCallout
         }
 
         // Faz o callout 
-        HttpResponse response = YoutubeIntegrationRequest.getChannelListByIds(commaSeparatedChannelIDs);
+        HttpResponse response = YoutubeIntegrationRequest.getResultsListByIds(commaSeparatedChannelIDs, 'channels');
         if(response.getStatusCode() != 200) { throw new YoutubeIntegrationRequest.YoutubeIntegrationRequestException('Callout request error. Method: ChannelListByIds, Status Code: ' + response.getStatusCode()); }
 
         YoutubeIntegrationResultWrapper wrappedResponse = YoutubeIntegrationResultWrapper.parse(response.getBody());

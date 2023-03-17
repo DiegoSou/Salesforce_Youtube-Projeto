@@ -8,8 +8,8 @@
     handleResponse : function(component, event, helper)
     { 
         let response = event.getParam('response');
-        
-        if(response.from = 'hp-search-channel')
+    
+        if(response.from == 'hp-search-channel')
         {   
             if(response.data)
             {
@@ -23,6 +23,10 @@
     
                 component.set('v.foundChannelList', foundList);
                 component.set('v.displaysListChannel', data);
+            }
+            if(response.error)
+            {
+                console.log(JSON.parse(response.error));
             }
         }
     },

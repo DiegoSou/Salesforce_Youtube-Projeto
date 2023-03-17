@@ -39,7 +39,7 @@ public without sharing class SelectedChannelService {
         if(record.LastModifiedDate.addHours(1) > Datetime.now()) { throw new SelectedChannelServiceExcpt().exception('Wait at least 1 hour to request another update.', false); }
         
         // Pega as estatísticas do canal através da request
-        HttpResponse response = YoutubeIntegrationRequest.getChannelListByIds(record.ChannelYtbID__c);
+        HttpResponse response = YoutubeIntegrationRequest.getResultsListByIds(record.ChannelYtbID__c, 'channels');
         if(response.getStatusCode() != 200) { throw new YoutubeIntegrationRequest.YoutubeIntegrationRequestException('Callout request error. Method: ChannelList, Status Code: ' + response.getStatusCode()); }
 
         YoutubeIntegrationResultWrapper channelData = YoutubeIntegrationResultWrapper.parse(response.getBody());
