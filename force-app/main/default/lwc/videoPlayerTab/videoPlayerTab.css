@@ -1,0 +1,6 @@
+.loadingHolder {
+    display: inline-block;
+    vertical-align: middle;
+    white-space: nowrap;
+    height: 2rem;
+}

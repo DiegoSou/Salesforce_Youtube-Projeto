@@ -23,9 +23,18 @@ export default class VideoTile extends LightningElement
         event.currentTarget.classList.toggle('slds-button_brand');
         event.currentTarget.classList.toggle('slds-button_success');
 
-        this.textAddOrAdded = this.textAddOrAdded == 'Add' ? 'Added' : 'Add';
-
-        let addEvent = new CustomEvent('added', { detail : { recordAdded : this.video} });
+        let addEvent;
+        if(this.textAddOrAdded == 'Add')
+        {
+            this.textAddOrAdded = 'Added';
+            addEvent = new CustomEvent('added', { detail : { recordAdded : JSON.stringify(this.video) } });
+        }
+        else
+        {
+            this.textAddOrAdded = 'Add';
+            addEvent = new CustomEvent('removed', { detail : { recordRemoved : this.video.VideoYtbId__c } });   
+        }
+        
         this.dispatchEvent(addEvent);
     }
 }

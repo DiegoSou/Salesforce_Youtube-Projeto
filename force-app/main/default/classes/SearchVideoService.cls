@@ -21,7 +21,8 @@ public without sharing class SearchVideoService
             VideoDomain videoFromResponse = new VideoDomain();
             videoFromResponse.constructVideoFromWrapper(item);
 
-            videoFromResponse.videoRecord.Channel__r = channelRecord;
+            // videoFromResponse.videoRecord.Channel__r = channelRecord;
+            videoFromResponse.videoRecord.Channel__c = channelRecord.Id;
 
             foundVideoList.add(videoFromResponse.videoRecord);
         }

@@ -7,24 +7,31 @@ const windowScrollHeight = 'max-height: ' + (window.innerHeight - (window.innerH
 
 export default class VideoSearchResults extends LightningElement 
 {
+    loading = false;
     scrollHeight = windowScrollHeight;
     @track videoList;
     @track videosAddedList;
     
     @wire(MessageContext) messageContext;
 
+    // Subscribe message channel to receive videos from search call
     connectedCallback()
     {
         subscribe(
             this.messageContext,
             CallServiceChannel,
-            (call) => this.handleSearch(call.response),
+            (call) => this.handleCallService(call.response),
             {} 
         );
     }
 
     @api search(channelId, searchParam)
     {   
+        this.loading = true;
+
+        this.videoList = [];
+        this.videosAddedList = [];
+
         let callService = this.template.querySelector('c-call-app-service');
 
         let params = [
@@ -40,18 +47,33 @@ export default class VideoSearchResults extends LightningElement
             }
         ];
 
+        callService.cmp = 'video-search-results';
         callService.call('SearchVideoAdapter', 'searchVideos', JSON.stringify(params));
     }
 
     @api save()
     {
-        console.log('Save!');
-        this.videoList = [];
+        this.loading = true;
+
+        let callService = this.template.querySelector('c-call-app-service');
+
+        let params = [
+            {
+                name : 'listObjJson',
+                type : 'Object',
+                value : JSON.stringify(this.videosAddedList)
+            }
+        ];
+        
+        callService.cmp = 'video-save-results';
+        callService.call('SelectedVideoAdapter', 'callSaveVideos', JSON.stringify(params));
     }
 
     // Handles the call service search videos
-    handleSearch(response)
+    handleCallService(response)
     {
+        this.loading = false;
+
         let callService = this.template.querySelector('c-call-app-service');
 
         if(response.from == 'video-search-results')
@@ -64,7 +86,7 @@ export default class VideoSearchResults extends LightningElement
                 // Check if is Empty List
                 if(Array.isArray(this.videoList) && this.videoList.length > 0)
                 {
-                    this.dispatchEvent(new CustomEvent('isnotempty'));
+                    this.dispatchEvent(new CustomEvent('setempty', { detail : { isEmpty : false } }));
                 }
             }
 
@@ -76,12 +98,49 @@ export default class VideoSearchResults extends LightningElement
                 callService.notificationToast(exceptionData.title, exceptionData.message, exceptionData.view);
             }
         }
+
+        if(response.from == 'video-save-results')
+        {
+            // Save was success, show toast and clear list
+            if(response.data)
+            {
+                this.videoList = [];
+
+                this.dispatchEvent(new CustomEvent('setempty', { detail : { isEmpty : true} }));
+                callService.notificationToast('Successfull save videos!', 'Check them on related lists', 'success');
+            }
+
+            // Error, show toast and preserve list
+            if(response.error)
+            {
+                let exceptionData = JSON.parse(response.error);
+
+                this.dispatchEvent(new CustomEvent('setempty', { detail : { isEmpty : false} }));
+                callService.notificationToast(exceptionData.title, exceptionData.message, exceptionData.view);
+            }
+        }
     }
 
     // Handles the click add on tile
     handleAdded(event)
     {
-        console.log('Added!');
+        let addedRecordJson = event.detail.recordAdded;
+
+        console.log('Added!', addedRecordJson);
+
+        this.videosAddedList.push(addedRecordJson);
+    }
+
+    // Handles the click remove on tile
+    handleRemoved(event)
+    {
+        let removedExternalId = event.detail.recordRemoved;
+
+        console.log('Removed!', removedExternalId);
+        
+        this.videosAddedList = this.videosAddedList.filter(
+            video => JSON.parse(video).VideoYtbId__c !== removedExternalId
+        );
     }
 }
 

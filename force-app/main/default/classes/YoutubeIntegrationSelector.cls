@@ -28,6 +28,11 @@ public class YoutubeIntegrationSelector
         return [SELECT Id, ChannelYtbID__c, LastModifiedDate FROM Channel__c WHERE ChannelYtbID__c IN : ids];
     }
 
+    public static List<Video__c> getVideosByID(Set<Id> ids)
+    {
+        return [SELECT Id, Name, VideoYtbID__c, LastModifiedDate FROM Video__c WHERE Id IN : ids];
+    }
+
     public static List<Video__c> getVideosByYtbID(Set<String> ids)
     {
         return [SELECT Id, VideoYtbID__c, LastModifiedDate FROM Video__c WHERE VideoYtbID__c IN : ids];
