@@ -1,13 +1,17 @@
-import { LightningElement, api, wire, track } from 'lwc';
+import { LightningElement, api, wire } from 'lwc';
 
 import { subscribe, MessageContext } from 'lightning/messageService';
 import CallServiceChannel from '@salesforce/messageChannel/CallServiceChannel__c';
+
+import { CurrentPageReference } from 'lightning/navigation';
 
 export default class VideoPlayerTab extends LightningElement 
 {
     loaded;
     @api recordId;
     @wire(MessageContext) messageContext;
+    @wire(CurrentPageReference) getStateParameters(pageReference) 
+    { if(pageReference) this.recordId = pageReference.state.recordId; }
 
     renderedCallback()
     {
@@ -25,6 +29,7 @@ export default class VideoPlayerTab extends LightningElement
         }
     }
 
+    // Chamada imperativa para buscar o external id
     getExternalId(videoId)
     {
         let callAppService = this.template.querySelector('c-call-app-service');
@@ -40,6 +45,7 @@ export default class VideoPlayerTab extends LightningElement
         callAppService.call('SelectedVideoAdapter', 'getExternalVideoId', JSON.stringify(params));
     }
 
+    // Função resposta à chamada do apex
     handleCallService(response)
     {
         if(response.data)
@@ -50,5 +56,11 @@ export default class VideoPlayerTab extends LightningElement
             videoiframe.setExternalId(externalId);
             this.loaded = true;
         }
+    }
+
+    // Previne navegação
+    preventNav(event)
+    {
+        console.log('Target!');
     }
 }

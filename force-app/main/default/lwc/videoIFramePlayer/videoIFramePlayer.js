@@ -17,11 +17,11 @@ export default class VideoIFramePlayer extends LightningElement
 
     get width()
     {
-        return window.screen.width * 0.6;
+        return window.screen.width * 0.4;
     }
 
     get height()
     {
-        return window.screen.height * 0.5;
+        return window.screen.height * 0.3;
     }
 }

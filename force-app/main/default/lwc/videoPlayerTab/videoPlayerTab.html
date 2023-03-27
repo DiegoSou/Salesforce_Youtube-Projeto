@@ -1,10 +1,13 @@
 <template>
+    <!-- Call service para pegar o id externo do vídeo -->
     <c-call-app-service cmp="video-player-tab"></c-call-app-service>
 
     <div class="slds-m-around_small slds-align_absolute-center">
         <div class="slds-border_top slds-p-around_small">
             
-            <c-video-i-frame-player></c-video-i-frame-player>
+            <div onclick={preventNav}>
+                <c-video-i-frame-player></c-video-i-frame-player>
+            </div>
 
             <div if:false={loaded} class="loadingHolder">
                 <lightning-spinner alternative-text="Loading player" size="medium"></lightning-spinner>
