@@ -1,0 +1,40 @@
+<!-- Include in app utility bar - Width: 720 | Height: 580 | Component H: 500 -->
+<apex:page controller="C3C_VFBindingControl">
+    <apex:includeLightning />
+
+    <apex:form >
+        <apex:pageBlock title="Bindings" mode="edit" id="bindingTable">
+            <apex:messages />
+
+            <apex:pageBlockButtons >
+                <apex:commandButton action="{!create}" value="Create" reRender="bindingTable"/>
+            	<apex:commandButton action="{!save}" value="Save" />
+            </apex:pageBlockButtons>
+
+            <apex:pageBlockSection showHeader="false">
+                <apex:inputText value="{!param}" title="Press enter to search" alt="Pesquisar por bindings..."/>
+                <apex:commandButton action="{!filter}" value="Search" reRender="bindingTable" />
+            </apex:pageBlockSection>
+
+            <apex:pageBlockTable value="{!bindings}" var="binding">
+            	<apex:column headerValue="Label">
+                    <apex:inputText value="{!binding.Masterlabel}"/>
+                </apex:column>
+                <apex:column headerValue="Estático?">
+                	<apex:inputCheckbox value="{!binding.Estatico__c}"/>
+                </apex:column>
+                <apex:column headerValue="Classe Apex">
+                	<apex:inputText value="{!binding.ClasseApex__c}"/>
+                </apex:column>
+            </apex:pageBlockTable>
+            
+        </apex:pageBlock>
+        
+        <apex:panelGrid columns="3">
+            <apex:commandLink action="{!previous}" value="Previous" reRender="bindingTable" />
+            <apex:commandLink action="{!next}" value="Next" reRender="bindingTable" />
+        </apex:panelGrid>
+
+        <apex:actionFunction action="{!filter}" name="filter"/>
+    </apex:form>
+</apex:page>
