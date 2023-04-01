@@ -1,10 +1,10 @@
 public class C3C_MDT_ControlSelector extends fflib_SObjectSelector implements C3C_MDT_IControlSelector
 {
     // sObjectType do atual mdt
-    public Schema.SObjectType getSObjectType() { return generic.getMdtSObjectType(); }
+    public Schema.SObjectType getSObjectType() { return getGeneric().getMdtSObjectType(); }
 
     // Campos __c do mdt + os defaults da domain
-    public List<Schema.SObjectField> getSObjectFieldList() { return generic.getMdtFieldMap().values(); } 
+    public List<Schema.SObjectField> getSObjectFieldList() { return getGeneric().getMdtFieldMap().values(); } 
 
     // Pega todos os registros do atual mdt
     public List<SObject> getAllMDTs()
