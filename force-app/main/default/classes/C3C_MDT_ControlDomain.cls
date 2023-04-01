@@ -75,7 +75,6 @@ public class C3C_MDT_ControlDomain
         if(getFieldNameByDataType().isEmpty()) { setMdtFieldMap(); } // Verifica se o template foi carregado
         for(String fieldname : getFieldNameByDataType().keySet()) 
         {
-            if(getFieldNameByDataType().get(fieldname) == 'DATE') { System.debug('DATEEE' + mdtSobject.get(fieldname)); }
             if(!fieldname.endsWith('__c')) { continue; }
 
             Metadata.CustomMetadataValue valueField = new Metadata.CustomMetadataValue();
