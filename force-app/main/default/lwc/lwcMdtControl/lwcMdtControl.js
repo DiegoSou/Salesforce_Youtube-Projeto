@@ -26,13 +26,8 @@ export default class MdtControl extends LightningElement
             this.messageContext,
             CallServiceChannel,
             (call) => {
-                console.log(call.response.from);
                 if(call.response.from == 'control-get-metadatas') { this.handleCallToGetMetadatas(call.response); }
-                if(call.response.from == 'control-get-columns')
-                {
-                    this.mdt_columns = JSON.parse(call.response.data);
-                    this.dispatchEvent(new CustomEvent('generatedcolumns')); 
-                }
+                if(call.response.from == 'control-get-columns') { this.handleCallToGetColumns(call.response); }
             },
             {}
         );
@@ -44,26 +39,30 @@ export default class MdtControl extends LightningElement
         if(this.loading)
         {
             let callService = this.template.querySelector('c-call-app-service');
-            let params = 
-            [
-                {
-                    name : 'mdtlabel',
-                    type : 'String',
-                    value : 'C3C_MDT_control'
-                }
-            ];
 
             callService.cmp = 'control-get-metadatas';
-            callService.call('C3C_MDT_ControlAdapter', 'getMetadatas', JSON.stringify(params));
+            callService.call('C3C_MDT_ControlAdapter', 'getMetadatas', { mdtlabel : 'C3C_MDT_control' });
         }
     }
 
     // Constrói a lista de rótulos dos metadados controláveis/configuráveis
     handleCallToGetMetadatas(response)
     {
-        let res = JSON.parse(JSON.parse(response.data));
+        if(response.data)
+        {
+            let res = JSON.parse(JSON.parse(response.data));   
+            this.generateHtmlSelect(res.map((v) => v.MasterLabel));
+        }
+    }
 
-        if(res.length > 0) { this.generateHtmlSelect(res.map((v) => v.MasterLabel)); }
+    // Define as colunas | campos do metadado selecionado
+    handleCallToGetColumns(response)
+    {
+        if(response.data)
+        {
+            this.mdt_columns = JSON.parse(response.data); 
+            this.dispatchEvent(new CustomEvent('generatedcolumns'));
+        }
     }
 
     // Gera uma tag select com cada option representando um metadado disponível
@@ -83,16 +82,9 @@ export default class MdtControl extends LightningElement
     generateColumns()
     {
         let callService = this.template.querySelector('c-call-app-service');
-        let params = [
-            {
-                name : 'mdtlabel',
-                type : 'String',
-                value : this.mdt_selected
-            }
-        ];
 
         callService.cmp = 'control-get-columns';
-        callService.call('C3C_MDT_ControlAdapter', 'getColumns', JSON.stringify(params));
+        callService.call('C3C_MDT_ControlAdapter', 'getColumns', { mdtlabel : this.mdt_selected });
     }
 
     // Metadado selecionado

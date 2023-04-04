@@ -49,28 +49,24 @@ export default class LwcBindings extends LightningElement
             this.dataMap = null;
 
             let callService = this.template.querySelector('c-call-app-service');
-            let params = [
-                {
-                    name : 'mdtlabel',
-                    type : 'String',
-                    value : this.dev_name
-                }
-            ];
 
             callService.cmp = 'metadatas-get-metadatas';
-            callService.call('C3C_MDT_ControlAdapter', 'getMetadatas', JSON.stringify(params));
+            callService.call('C3C_MDT_ControlAdapter', 'getMetadatas', { mdtlabel : this.dev_name });
         }
     }
 
     handleCallToRetrieve(response)
     {
-        let res = JSON.parse(JSON.parse(response.data));
-        this.dataMap = new Map();
-
-        if(res.length > 0) { res.forEach((mdtRecord) => this.dataMap.set(mdtRecord.QualifiedApiName, this.constructNonEditedMetadata(mdtRecord))); }
-            
-        // Carrega todos os registros e desativa loading
-        this.handleSearch();
+        if(response.data)
+        {
+            let res = JSON.parse(JSON.parse(response.data));
+            this.dataMap = new Map();
+    
+            res.forEach((mdtRecord) => this.dataMap.set(mdtRecord.QualifiedApiName, this.constructNonEditedMetadata(mdtRecord)));
+                
+            // Carrega todos os registros e desativa loading
+            this.handleSearch();
+        }
     }
 
     handleCallToSave() 
@@ -161,21 +157,9 @@ export default class LwcBindings extends LightningElement
             this.loading = true;
 
             let callService = this.template.querySelector('c-call-app-service');
-            let params = [
-                {
-                    name : 'mdtlabel',
-                    type : 'String',
-                    value : this.dev_name 
-                },
-                {
-                    name : 'listjson',
-                    type : 'String',
-                    value : JSON.stringify(this.mdts_toSave)
-                }
-            ];
 
             callService.cmp = 'metadatas-save-metadatas';
-            callService.call('C3C_MDT_ControlAdapter', 'saveMetadatas', JSON.stringify(params));
+            callService.call('C3C_MDT_ControlAdapter', 'saveMetadatas', { mdtlabel : this.dev_name, listjson : JSON.stringify(this.mdts_toSave) });
         } else { this.loading = false; }
     }
 

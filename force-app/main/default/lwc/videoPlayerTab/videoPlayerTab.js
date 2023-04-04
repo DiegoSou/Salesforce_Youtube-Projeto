@@ -21,7 +21,7 @@ export default class VideoPlayerTab extends LightningElement
             subscribe(
                 this.messageContext,
                 CallServiceChannel,
-                (call) => this.handleCallService(call.response),
+                (call) => { if(call.response.from == 'video-player-tab') { this.handleCallService(call.response) } },
                 {}
             );
     
@@ -34,15 +34,8 @@ export default class VideoPlayerTab extends LightningElement
     {
         let callAppService = this.template.querySelector('c-call-app-service');
 
-        let params = [
-            {
-                name : 'recordId',
-                type : 'String',
-                value : videoId
-            }
-        ];
-
-        callAppService.call('SelectedVideoAdapter', 'getExternalVideoId', JSON.stringify(params));
+        callAppService.cmp = 'video-player-tab';
+        callAppService.call('SelectedVideoAdapter', 'getExternalVideoId', { recordId : videoId });
     }
 
     // Função resposta à chamada do apex
@@ -56,11 +49,5 @@ export default class VideoPlayerTab extends LightningElement
             videoiframe.setExternalId(externalId);
             this.loaded = true;
         }
-    }
-
-    // Previne navegação
-    preventNav(event)
-    {
-        console.log('Target!');
     }
 }

@@ -20,7 +20,10 @@ export default class VideoSearchResults extends LightningElement
         subscribe(
             this.messageContext,
             CallServiceChannel,
-            (call) => this.handleCallService(call.response),
+            (call) => {
+                if(call.response.from == 'video-search-results') { this.handleCallVideoSearch(call.response); }
+                if(call.response.from == 'video-save-results') { this.handleCallVideoSave(call.response); }
+            },
             {} 
         );
     }
@@ -34,21 +37,8 @@ export default class VideoSearchResults extends LightningElement
 
         let callService = this.template.querySelector('c-call-app-service');
 
-        let params = [
-            {
-                name : 'searchParam',
-                type : 'String',
-                value : searchParam
-            },
-            {
-                name : 'channelId',
-                type : 'String',
-                value : channelId
-            }
-        ];
-
         callService.cmp = 'video-search-results';
-        callService.call('SearchVideoAdapter', 'searchVideos', JSON.stringify(params));
+        callService.call('SearchVideoAdapter', 'searchVideos', { searchParam : searchParam, channelId : channelId });
     }
 
     @api save()
@@ -56,68 +46,46 @@ export default class VideoSearchResults extends LightningElement
         this.loading = true;
 
         let callService = this.template.querySelector('c-call-app-service');
-
-        let params = [
-            {
-                name : 'listObjJson',
-                type : 'Object',
-                value : JSON.stringify(this.videosAddedList)
-            }
-        ];
         
         callService.cmp = 'video-save-results';
-        callService.call('SelectedVideoAdapter', 'callSaveVideos', JSON.stringify(params));
+        callService.call('SelectedVideoAdapter', 'callSaveVideos', { listObjJson : this.videosAddedList });
     }
 
     // Handles the call service search videos
-    handleCallService(response)
+    handleCallVideoSearch(response)
+    {
+        this.loading = false;
+
+        if(response.data)
+        {
+            this.videoList = JSON.parse(response.data);
+                
+            // Check if is Empty List
+            if(Array.isArray(this.videoList) && this.videoList.length > 0)
+            {
+                this.dispatchEvent(new CustomEvent('setempty', { detail : { isEmpty : false } }));
+            }
+        }
+    }
+
+    // Handles the call service save videos
+    handleCallVideoSave(response)
     {
         this.loading = false;
 
         let callService = this.template.querySelector('c-call-app-service');
 
-        if(response.from == 'video-search-results')
+        if(response.data)
         {
-            // Fires search event to communicate the search tab component
-            if(response.data)
-            {
-                this.videoList = JSON.parse(response.data);
-                
-                // Check if is Empty List
-                if(Array.isArray(this.videoList) && this.videoList.length > 0)
-                {
-                    this.dispatchEvent(new CustomEvent('setempty', { detail : { isEmpty : false } }));
-                }
-            }
+            this.videoList = [];
 
-            // Show the error toast 
-            if(response.error)
-            {
-                let exceptionData = JSON.parse(response.error);
-
-                callService.notificationToast(exceptionData.title, exceptionData.message, exceptionData.view);
-            }
+            this.dispatchEvent(new CustomEvent('setempty', { detail : { isEmpty : true} }));
+            callService.notificationToast('Successfull save videos!', 'Check them on related lists', 'success');
         }
 
-        if(response.from == 'video-save-results')
+        if(response.error)
         {
-            // Save was success, show toast and clear list
-            if(response.data)
-            {
-                this.videoList = [];
-
-                this.dispatchEvent(new CustomEvent('setempty', { detail : { isEmpty : true} }));
-                callService.notificationToast('Successfull save videos!', 'Check them on related lists', 'success');
-            }
-
-            // Error, show toast and preserve list
-            if(response.error)
-            {
-                let exceptionData = JSON.parse(response.error);
-
-                this.dispatchEvent(new CustomEvent('setempty', { detail : { isEmpty : false} }));
-                callService.notificationToast(exceptionData.title, exceptionData.message, exceptionData.view);
-            }
+            this.dispatchEvent(new CustomEvent('setempty', { detail : { isEmpty : false} }));
         }
     }
 

@@ -19,11 +19,14 @@ public class SearchVideoAdapter extends APP_AbstractAdapter
     // Classe adapter para o método e call
     public class SearchVideos_ADP extends APP_AbstractAdapter.CallerMethod
     {
-        public override void callMethod(Map<String, APP_AbstractAdapter.ParameterMethod> params)
+        public override void callMethod(APP_AbstractAdapter adp, String methodName, Map<String, Object> params)
         {
-            this.response = new SearchVideoService().searchVideos(
-                (String) params.get('searchParam').getValue(),
-                (String) params.get('channelId').getValue()
+            adp.setNewResponseToMethod(
+                methodName,
+                new SearchVideoService().searchVideos(
+                    (String) params.get('searchParam'),
+                    (String) params.get('channelId')
+                )
             );
         }
     }

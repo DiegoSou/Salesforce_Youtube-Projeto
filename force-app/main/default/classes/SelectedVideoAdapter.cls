@@ -18,23 +18,28 @@ public class SelectedVideoAdapter extends APP_AbstractAdapter
         };
     }
 
-    // Classe Adapter para o método e call
     public class CallSaveVideos_ADP extends APP_AbstractAdapter.CallerMethod
     {
-        public override void callMethod(Map<String,APP_AbstractAdapter.ParameterMethod> params) 
+        public override void callMethod(APP_AbstractAdapter adp, String methodName, Map<String,Object> params) 
         {
-            this.response = new SelectedVideoService().callSaveVideos(
-                (List<Object>) params.get('listObjJson').getValue()
+            adp.setNewResponseToMethod(
+                methodName, 
+                new SelectedVideoService().callSaveVideos(
+                    (List<Object>) params.get('listObjJson')
+                )
             );
         }
     }
 
     public class CallGetExternalVideoId_ADP extends APP_AbstractAdapter.CallerMethod
     {
-        public override void callMethod(Map<String,APP_AbstractAdapter.ParameterMethod> params) 
+        public override void callMethod(APP_AbstractAdapter adp, String methodName, Map<String,Object> params) 
         {
-            this.response = new SelectedVideoService().callGetExternalVideoId(
-                (String) params.get('recordId').getValue()
+            adp.setNewResponseToMethod(
+                methodName,
+                new SelectedVideoService().callGetExternalVideoId(
+                    (String) params.get('recordId')
+                )
             );
         }
     }

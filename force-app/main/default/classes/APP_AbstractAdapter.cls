@@ -1,136 +1,55 @@
-public abstract class APP_AbstractAdapter 
+public virtual class APP_AbstractAdapter 
 {
     public class APP_AbstractAdapterException extends Exception {}
+    
+    // * MÉTODOS 
+    // configurações
+    public virtual Map<String, String> configureMethodCatalog() { return new Map<String, String>(); } // configura catálogo de nomes
+    public virtual Map<String, Object> configureParamsCatalog() { return new Map<String, Object>(); } // configura catálogo de parâmetros
 
-    // catálogo de métodos
-    private Map<String, String> methodNameCatalog 
-    {
-        get 
-        {
-            return this.methodNameCatalog != null ? methodNameCatalog : new Map<String, String>();
-        }
-        private set;
-    }
-    private void setMethodCatalog()
-    {
-        this.methodNameCatalog = this.configureMethodCatalog();
-    }
+    // catálogo de nomes
+    private Map<String, String> methodNameCatalog {get; private set;}
+    public Map<String, String> getMethodNameCatalog() { if(methodNameCatalog == null) { setMethodNameCatalog(); } return methodNameCatalog; }
+    public void setMethodNameCatalog() { this.methodNameCatalog = this.configureMethodCatalog(); }
 
     // catálogo de parâmetros
-    private Map<String, Object> methodParamsCatalog
-    {
-        get
-        {
-            return this.methodParamsCatalog != null ? methodParamsCatalog : new Map<String, Object>();
-        }
-        private set;
-    }
-    private void setParamsCatalog()
-    {
-        this.methodParamsCatalog = this.configureParamsCatalog();
-    }
+    private Map<String, Object> methodParamsCatalog {get; private set;}
+    public Map<String, Object> getMethodParamsCatalog() { if(methodParamsCatalog == null) { setMethodParamsCatalog(); } return methodParamsCatalog; }
+    public void setMethodParamsCatalog() { this.methodParamsCatalog = this.configureParamsCatalog(); }
 
-    // catálogo de respostas
+    // catálogo de respostas (preenche ao executar o determinado método)
     private Map<String, Object> methodResponseCatalog = new Map<String, Object>();
 
-    private void setNewResponseToMethod(String methodName, Object methodResponse)
-    {
-        this.methodResponseCatalog.put(methodName, methodResponse);
-    }
-    public String getMethodResponse(String methodName)
-    {
-        return this.methodResponseCatalog.get(methodName) != null ? JSON.serialize(this.methodResponseCatalog.get(methodName)) : '';
-    }
+    public Object getMethodResponse(String methodName) { if(methodResponseCatalog.get(methodName) == null) { setNewResponseToMethod(methodName, 'non-response'); } return methodResponseCatalog.get(methodName); }
+    public void setNewResponseToMethod(String methodName, Object resp) { this.methodResponseCatalog.put(methodName, resp); }
 
-    // ** MÉTODOS **
-    // configura catálogo de métodos
-    public abstract Map<String, String> configureMethodCatalog();
-    public abstract Map<String, Object> configureParamsCatalog();
-
-    // execute
+    // * EXECUTE
     public void executeMethod(String methodName, String params)
     {
-        this.setMethodCatalog();
-        this.setParamsCatalog();
-
-        if(!this.methodNameCatalog.containsKey(methodName)) { throw new APP_AbstractAdapterException('Método não existe ou não informado: ' + methodName); }
-        
-        // "searchChannels : [{ 'name' : 'channelId', 'type' : 'String', 'value' : '12345' }]"
-        // parâmetros definidos na adapter
-        Map<String, String> paramsCatalog = (Map<String, String>) methodParamsCatalog.get(methodName);
-
-        // parâmetros que vem do front-end
-        List<ParameterMethod> myParams = (List<ParameterMethod>) JSON.deserialize(params, List<APP_AbstractAdapter.ParameterMethod>.class);
-        Map<String, ParameterMethod> paramMethodByName = new Map<String, ParameterMethod>();
-
-        for(ParameterMethod param : myParams)
+        try
         {
-            if(paramsCatalog.get(param.name) == null) { throw new APP_AbstractAdapterException('Parâmetro não existe ou não foi informado: ' + param.name); }
-            if(paramsCatalog.get(param.name) != param.type) { throw new APP_AbstractAdapterException('Tipo incorreto do parâmetro: ' + param.type); }
+            // parâmetros que vem do front-end 
+            Map<String, Object> paramByName = (Map<String, Object>) JSON.deserializeUntyped(params);
 
-            paramMethodByName.put(param.name, param);
-        }
+            // verifica método
+            if(!getMethodNameCatalog().containsKey(methodName)) { throw new APP_AbstractAdapterException('Método não existe ou não informado: ' + methodName); }
+            
+            // verifica parâmetros
+            for(String paramKey : ((Map<String, String>) getMethodParamsCatalog().get(methodName)).keySet())
+                if(!paramByName.containsKey(paramKey)) { throw new APP_AbstractAdapterException('Parâmetro exigido não foi informado: ' + methodName + '(' + paramKey + ')'); }
+    
+            ((CallerMethod) Type.forName(getMethodNameCatalog().get(methodName)).newInstance()).callMethod(this, methodName, paramByName); 
+        } 
+        catch (Exception e) 
+        {
+            System.debug(e.getStackTraceString() + ' | ' + e.getMessage() + ' | Line - ' + e.getLineNumber());
+            if(e instanceof APP_UserExceptionType.APP_CustomException) { throw e; }
 
-        methodParamsCatalog.put(methodName, paramMethodByName);
-
-        Object appCall = Type.forName(this.methodNameCatalog.get(methodName)).newInstance();
-        ((CallerMethod) appCall).callMethod((Map<String, ParameterMethod>) methodParamsCatalog.get(methodName));
-
-        this.setNewResponseToMethod(
-            methodName, 
-            ((CallerMethod) appCall).response
-        ); 
-    }
-
-    // ** CLASSES **
-    // Contrato de classe para rodar determinado método
-    public abstract class CallerMethod
-    {
-        public abstract void callMethod(Map<String, ParameterMethod> params);
-        public Object response;
-    }
-
-    public class ParameterMethod
-    {
-        public String name;
-        public String type;
-        public String value;
-
-        public Object getValue(){
-            switch on type {
-                when 'String' 
-                {
-                    return (Object) APP_ApplicationReturner.returnToString(value);
-                }
-                when 'Integer'
-                {
-                    return (Object) APP_ApplicationReturner.returnToInteger(value);    
-                }
-                when 'Date'
-                {
-                    return (Object) APP_ApplicationReturner.returnToDate(value);
-                }
-                when 'Datetime'
-                {
-                    return (Object) APP_ApplicationReturner.returnToDatetime(value);
-                }
-                when 'Decimal'
-                {
-                    return (Object) APP_ApplicationReturner.returnToDecimal(value);
-                }
-                when 'Boolean'
-                {
-                    return (Object) APP_ApplicationReturner.returnToBoolean(value);
-                }
-                when 'Object'
-                {
-                    return (Object) APP_ApplicationReturner.returnToObject(value);
-                }
-                when else 
-                {
-                    throw new APP_AbstractAdapterException('Tipo do parâmetro inválido, verifique a chamada do método');     
-                }
-            }
+            throw new APP_UserExceptionType().exception('Ocorreu um erro inesperado, contate um administrador.', true); 
         }
     }
+
+    // * CLASSES
+    // classe que chama método da service e define resposta
+    public abstract class CallerMethod { public abstract void callMethod(APP_AbstractAdapter adp, String methodName, Map<String, Object> params); }
 }

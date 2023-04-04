@@ -19,13 +19,15 @@ public class SearchChannelAdapter extends APP_AbstractAdapter
     // Classe Adapter para o método e call 
     public class SearchChannels_ADP extends APP_AbstractAdapter.CallerMethod
     {
-        public override void callMethod(Map<String, APP_AbstractAdapter.ParameterMethod> params)
+        public override void callMethod(APP_AbstractAdapter adp, String methodName, Map<String,Object> params) 
         {
-            this.response = new SearchChannelService().searchChannels(
-                (String) params.get('searchParam').getValue(),
-                (String) params.get('maxResults').getValue()
-            ); 
+            adp.setNewResponseToMethod(
+                methodName, 
+                new SearchChannelService().searchChannels(
+                    (String) params.get('searchParam'),
+                    (Integer) params.get('maxResults')
+                )
+            );
         }
-
     }
 }

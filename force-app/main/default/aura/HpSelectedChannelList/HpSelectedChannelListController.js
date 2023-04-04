@@ -33,18 +33,10 @@
 
         let listJson = list.map(x => x ? JSON.stringify(x) : '');
 
-        let params = [
-            {
-                name : 'listObjJson',
-                type : 'Object',
-                value : JSON.stringify(listJson)
-            }
-        ];
-
         // chama a service
         let callAppService = component.find("callAppService");
 
-        callAppService.call('SelectedChannelAdapter', 'callSaveChannels', JSON.stringify(params));
+        callAppService.call('SelectedChannelAdapter', 'callSaveChannels', { listObjJson : listJson });
     },
 
     handleResponse : function(component, event, helper)

@@ -14,30 +14,25 @@ export default class UpdateRecordButton extends LightningElement
     methodName = '';
 
     connectedCallback(){
-        this.subscribeToChannel();
+        subscribe(
+            this.messageContext, 
+            CallServiceChannel,
+            (call) => { if(call.response.from == 'update-record-button') { this.handleRecordUpdate(call.response) } },
+            {}
+        );
     }
 
     handleRecordUpdate(response)
     {
         let callAppService = this.template.querySelector("c-call-app-service");
 
-        if(response.from == 'update-record-button')
-        {
-            this.loading = false;
+        this.loading = false;
 
-            if(response.data)
-            {
-                let successMsg = JSON.parse(response.data);
-    
-                callAppService.notificationToast('Success', successMsg, 'success');
-            }
-    
-            if(response.error)
-            {
-                let exceptionData = JSON.parse(response.error); 
-    
-                callAppService.notificationToast(exceptionData.title, exceptionData.message, exceptionData.view);
-            }
+        if(response.data)
+        {
+            let successMsg = JSON.parse(response.data);
+
+            callAppService.notificationToast('Success', successMsg, 'success');
         }
     }
     
@@ -47,26 +42,9 @@ export default class UpdateRecordButton extends LightningElement
         if(this.targetObject === 'Channel') { this.methodName = 'callUpdateChannel'; }
         if(this.targetObject === 'Video') { this.methodName = 'callUpdateVideo'; }
         
-        let params = [
-            {
-                name : 'recordId',
-                type : 'String',
-                value : this.recordId
-            }
-        ];
-        
         this.loading = true;
-        callAppService.call('SelectedChannelAdapter', this.methodName, JSON.stringify(params));
-    }
-
-    // HELPER
-    subscribeToChannel()
-    {
-        this.subscription = subscribe(
-            this.messageContext, 
-            CallServiceChannel,
-            (call) => this.handleRecordUpdate(call.response),
-            {}
-        );
+        
+        callAppService.cmp = 'update-record-button';
+        callAppService.call('SelectedChannelAdapter', this.methodName, { recordId : this.recordId });
     }
 }

@@ -1,9 +1,5 @@
 public virtual class APP_UserExceptionType
 {
-    public String message {get; private set;}
-    public String viewType {get; private set;}
-    public String fromClass {get; private set;}
-
     public APP_CustomException exception(String message, Boolean isCritical)
     {
         String className = String.valueOf(this).substring(0,String.valueOf(this).indexOf(':'));

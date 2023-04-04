@@ -39,24 +39,11 @@
         let searchParam = component.get("v.searchParam"); 
         let maxResults = component.get("v.maxResults");
 
-        let params = [
-            {
-                name : "searchParam",
-                type : "String",
-                value : searchParam,
-            },
-            {
-                name : "maxResults",
-                type : "String",
-                value : maxResults,
-            }
-        ];
-
         // evita chamadas de search desnecessárias
         if(searchParam.replaceAll(' ', '') != '')
         {
             let callAppService = component.find("callAppService");
-            callAppService.call('SearchChannelAdapter', 'searchChannels', JSON.stringify(params));
+            callAppService.call('SearchChannelAdapter', 'searchChannels', { searchParam : searchParam, maxResults : maxResults });
         }
         else
         {

@@ -39,14 +39,12 @@ export default class ConfigureMdt extends LightningElement
         col.label = keyCol.replace('__c', '');
         col.fieldName = keyCol;
         col.type = this.switchTypeColumn(typeCol);
-        console.log(col.type);
         return col;
     }
 
     // Tipos das colunas
     switchTypeColumn(typeCol)
     {
-        console.log('Type colum - ' + typeCol);
         switch (typeCol) 
         {
             case 'STRING' :

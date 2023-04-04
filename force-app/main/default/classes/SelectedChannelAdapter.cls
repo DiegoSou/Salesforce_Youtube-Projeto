@@ -21,20 +21,26 @@ public class SelectedChannelAdapter extends APP_AbstractAdapter
     // Classe Adapter para o método e call 
     public class CallSaveChannels_ADP extends APP_AbstractAdapter.CallerMethod
     {
-        public override void callMethod(Map<String, APP_AbstractAdapter.ParameterMethod> params)
+        public override void callMethod(APP_AbstractAdapter adp, String methodName, Map<String,Object> params) 
         {
-            this.response = new SelectedChannelService().callSaveChannels(
-                (List<Object>) params.get('listObjJson').getValue()
+            adp.setNewResponseToMethod(
+                methodName, 
+                new SelectedChannelService().callSaveChannels(
+                    (List<Object>) params.get('listObjJson')
+                )
             );
         }
     }
 
     public class CallUpdateChannel_ADP extends APP_AbstractAdapter.CallerMethod
     {
-        public override void callMethod(Map<String, APP_AbstractAdapter.ParameterMethod> params)
+        public override void callMethod(APP_AbstractAdapter adp, String methodName, Map<String,Object> params) 
         {
-            this.response = new SelectedChannelService().callUpdateChannel(
-                (String) params.get('recordId').getValue()
+            adp.setNewResponseToMethod(
+                methodName, 
+                new SelectedChannelService().callUpdateChannel(
+                    (String) params.get('recordId')
+                )
             );
         }
     }
