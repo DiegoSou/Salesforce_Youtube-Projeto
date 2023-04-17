@@ -1,23 +1,31 @@
-public class C3C_MDT_ControlSelector extends fflib_SObjectSelector implements C3C_MDT_IControlSelector
+public without sharing class C3C_MDT_ControlSelector implements C3C_MDT_IControlSelector
 {
-    // sObjectType do atual mdt
-    public Schema.SObjectType getSObjectType() { return getGeneric().getMdtSObjectType(); }
-
-    // Campos __c do mdt + os defaults da domain
-    public List<Schema.SObjectField> getSObjectFieldList() { return getGeneric().getMdtFieldMap().values(); } 
-
-    // Pega todos os registros do atual mdt
-    public List<SObject> getAllMDTs()
+    // registro para indicar qual será o metadado utilizado, através do seu dev name;
+    public C3C_MDT_ControlDomain domainInstance 
     {
-        fflib_QueryFactory query = newQueryFactory();
-        
-        return (List<SObject>) this.libDatabase.queryExecute(query.toSOQL());
+        get {
+            if(domainInstance == null) {setDomainInstance('C3C_MDT_control');}
+            return domainInstance;
+        }
+        private set;
     }
 
-    // mdt genérico
-    public C3C_MDT_ControlDomain generic {get; private set;}
-    public C3C_MDT_ControlDomain getGeneric() { if(generic == null) setGeneric('C3C_MDT_control'); return generic; }
+    public C3C_MDT_IControlSelector setDomainInstance(String devName)
+    {
+        domainInstance = new C3C_MDT_ControlDomain().defineMetadataInstance(devName);
 
-    // utilize esse método para indicar qual será o metadado utilizado, através do seu dev name;
-    public C3C_MDT_IControlSelector setGeneric(String devName) { this.generic = (new C3C_MDT_ControlDomain()).setDeveloperName(devName); return (C3C_MDT_IControlSelector) this; }
+        return this;
+    }
+
+    public List<SObject> getAllMDTs()
+    {
+        String fields = '';
+        for(String key : domainInstance.fieldNameByDataType.keySet())
+        {
+            fields += ','+key;
+        }
+        String query = ('SELECT {fields} FROM {sobject}').replace('{fields}', fields).replace('{sobject}', domainInstance.getObjectName()).replaceFirst(',', '');
+        
+        return (List<SObject>) Database.query(query);
+    }
 }
