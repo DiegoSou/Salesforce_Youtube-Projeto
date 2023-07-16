@@ -1,0 +1,10 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<LightningMessageChannel xmlns="http://soap.sforce.com/2006/04/metadata">
+    <description>Component channel to comunicate call service responses</description>
+    <isExposed>true</isExposed>
+    <lightningMessageFields>
+        <description>JSON response</description>
+        <fieldName>response</fieldName>
+    </lightningMessageFields>
+    <masterLabel>CallServiceChannel</masterLabel>
+</LightningMessageChannel>

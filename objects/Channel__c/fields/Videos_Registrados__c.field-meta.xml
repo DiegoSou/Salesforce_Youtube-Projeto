@@ -1,0 +1,15 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<CustomField xmlns="http://soap.sforce.com/2006/04/metadata">
+    <fullName>Videos_Registrados__c</fullName>
+    <externalId>false</externalId>
+    <label>Vídeos Registrados</label>
+    <summaryFilterItems>
+        <field>Video__c.VideoYtbId__c</field>
+        <operation>notEqual</operation>
+        <value>null</value>
+    </summaryFilterItems>
+    <summaryForeignKey>Video__c.Channel__c</summaryForeignKey>
+    <summaryOperation>count</summaryOperation>
+    <trackTrending>false</trackTrending>
+    <type>Summary</type>
+</CustomField>

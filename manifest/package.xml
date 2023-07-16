@@ -6,6 +6,22 @@
     </types>
     <types>
         <members>*</members>
+        <name>CustomObject</name>
+    </types>
+    <types>
+        <members>*</members>
+        <name>CustomTab</name>
+    </types>
+    <types>
+        <members>*</members>
+        <name>CustomApplication</name>
+    </types>
+    <types>
+        <members>*</members>
+        <name>CustomMetadata</name>
+    </types>
+    <types>
+        <members>*</members>
         <name>ApexComponent</name>
     </types>
     <types>
@@ -30,11 +46,23 @@
     </types>
     <types>
         <members>*</members>
+        <name>LightningMessageChannel</name>
+    </types>
+    <types>
+        <members>*</members>
+        <name>ContentAsset</name>
+    </types>
+    <types>
+        <members>*</members>
         <name>StaticResource</name>
     </types>
     <types>
         <members>*</members>
-        <name>CustomMetadata</name>
+        <name>PermissionSet</name>
+    </types>
+    <types>
+        <members>*</members>
+        <name>RemoteSiteSetting</name>
     </types>
     <version>56.0</version>
-</Package>
+</Package>                                                                                      

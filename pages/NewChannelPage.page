@@ -1,0 +1,16 @@
+<apex:page standardController="Channel__c">
+    <apex:includeLightning />
+    
+    <div id="channelAssistantComponent" />
+    
+    <script>
+    	$Lightning.use("c:AppChannelAssistant", function(){
+        	$Lightning.createComponent(
+            	"c:ChannelAssistant",
+                { channelListViewUrl : window.location.origin + '/lightning/o/Channel__c/list' },
+                "channelAssistantComponent",
+                function () { console.log('Página de Criação de Canais carregada.'); }
+            )
+        });
+    </script>
+</apex:page>

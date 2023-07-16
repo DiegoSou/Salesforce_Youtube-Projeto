@@ -1,0 +1,67 @@
+<!-- Helper Search Channel Component -->
+<aura:component>
+    <!-- Subscribe message channel to fire apex call -->
+    <lightning:messageChannel type="CallServiceChannel__c" onMessage="{!c.handleResponse}"/>
+    <!-- Subscribe message channel for updates the list when a record is returned -->
+    <lightning:messageChannel type="ChannelNotificationChannel__c" onMessage="{!c.handleReturnRecord}" scope="APPLICATION"/>
+
+    <!-- Attributes -->
+    <aura:attribute type="String" name="searchParam" default=""/>
+    <aura:attribute type="List" name="foundChannelList" default="[]"/>
+    <aura:attribute type="List" name="displaysListChannel" default="[]"/>
+    <aura:attribute type="String" name="toggleMaxResultsStyle" default="display:none"/>
+    <aura:attribute type="Integer" name="maxResults" default="25"/>
+    <aura:attribute type="String" name="windowHeight"/>
+    <aura:attribute type="Boolean" name="anyParam" default="false"/>
+
+    <!-- Register the pass event -->
+    <aura:registerEvent name="passRecord" type="c:ChannelTileEvent"/>
+    <!-- Register the remove event -->
+    <aura:registerEvent name="removeRecord" type="c:ChannelTileEvent"/>
+
+    <!-- Handle the height of search div -->
+    <aura:handler name="init" value="{!this}" action="{!c.doInit}"/>
+
+    <!-- Fire pass event -->
+    <aura:handler name="clickAddTile" event="c:ChannelTileEvent" action="{!c.firePassRecord}"/>
+
+    <article>
+        <div>
+            <lightning:icon iconName="standard:search" size="medium"/>
+            <span class="slds-text-heading_medium slds-var-p-left_x-small alignMiddle">Search your Youtube Channel</span>
+        </div>
+        <br/>
+        <div class="dFlex">
+            <lightning:input name="searchParamIpt" value="{!v.searchParam}" class="slds-var-p-right_x-small fullLarge"/>
+            <lightning:button variant="brand-outline" label="Search" onclick="{!c.clickSearch}" class="searchBtn"/>
+            
+            <div class="slds-form-element channelCard slds-var-m-left_x-small">
+                <div class="slds-form-element__control">
+                  <div class="slds-checkbox">
+                    <input type="checkbox" name="options" id="hasMaxResultsIpt" onchange="{!c.toggleMaxResults}" />
+                    <label class="slds-checkbox__label" for="hasMaxResultsIpt">
+                      <span class="slds-checkbox_faux"></span>
+                      <span class="slds-form-element__label">Custom limit for results</span>
+                    </label>
+                  </div>
+                </div>
+            </div>
+
+            <lightning:input type="Number" name="maxResultsIpt" max="99" min="1" maxlength="2" value="{!v.maxResults}" id="numberMaxResultsIpt" style="{!v.toggleMaxResultsStyle}"/>
+        </div>
+    
+        <div class="slds-var-m-around_small slds-scrollable" style="{! 'max-height: ' + (v.windowHeight - (v.windowHeight*0.3)) + 'px'}">
+            <aura:iteration items="{!v.displaysListChannel}" var="tempChannel" indexVar="index">
+                <aura:if isTrue="{!tempChannel != null}">
+                    <c:ChannelTileComponent tempChannel="{!tempChannel}" index="{!index}" type="Add"/>
+                </aura:if>
+            </aura:iteration> 
+
+            <aura:if isTrue="{!v.anyParam}">
+                <c:CustomAuraToast message="Must enter at least one character to run search." variant="error"/>
+            </aura:if>
+        </div>
+    </article>
+
+    <c:callAppService aura:id="callAppService" cmp="hp-search-channel"/>
+</aura:component>

@@ -1,0 +1,41 @@
+<aura:component>
+    <aura:attribute name="channelListViewUrl" type="String"/>
+    <aura:attribute name="listSelected" type="List" default="[]"/>
+    
+    <!-- Passes the selected record to list of selecteds -->
+    <aura:handler name="passRecord" event="c:ChannelTileEvent" action="{!c.passRecordToList}"/>
+    <!-- Removes the returned record from list of selecteds -->
+    <aura:handler name="removeRecord" event="c:ChannelTileEvent" action="{!c.removeRecordFromList}"/>
+
+    <div class="slds-card">
+        <div class="slds-card__header">
+            <header class="slds-media slds-media_center slds-has-flexi-truncate">
+                <div class="slds-media__figure">
+                    <span class="slds-icon_container" title="Channel Assistant">
+                        <lightning:icon iconName="standard:service_request" size="large" />
+                        <span class="slds-assistive-text">Channel Assistant</span>
+                    </span>
+                </div>
+                <div class="slds-media__body">
+                    <h2 class="slds-card__header-title">
+                    <a href="{!v.channelListViewUrl}" class="slds-card__header-link slds-truncate" title="Channel">
+                        <span class="slds-text-heading_large">Channel Assistant</span>
+                    </a>
+                    </h2>
+                </div>
+            </header>
+        </div>
+    </div>
+        
+    <div class="slds-grid slds-wrap slds-var-p-around_small" style="background-color: #fff;">
+        <div class="slds-col slds-size_8-of-12">
+            <!-- component 1: Passes the record to selected list -->
+            <c:SearchChannelComponent />
+        </div>
+
+        <div class="slds-col slds-size_4-of-12">
+            <!-- component 2: Receives selected list -->
+            <c:SelectedChannelListComponent selectedList="{!v.listSelected}" />
+        </div>
+    </div>
+</aura:component>

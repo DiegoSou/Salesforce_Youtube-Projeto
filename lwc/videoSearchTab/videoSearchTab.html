@@ -1,0 +1,37 @@
+<template>
+    <div class="slds-grid slds-wrap">
+        <div class="slds-col slds-size_10-of-12">
+            <div class="slds-form-element slds-var-p-around_x-small">
+                <div class="slds-form-element__control slds-input-has-icon slds-input-has-icon_right slds-hint-parent">
+                    <button onclick={clearSearch} title="Clear" class="slds-button slds-button_icon slds-input__icon slds-input__icon_right">
+                        <lightning-icon icon-name="utility:clear" alternative-text="clear" size="xx-small" class="slds-button__icon_hint"></lightning-icon>
+                    </button>
+
+                    <input id="searchParam" type="text" placeholder="Type thing some..." class="slds-input"/>
+                </div>
+            </div>
+        </div>
+
+        <div class="slds-col slds-size_2-of-12">
+            <div class="slds-var-p-top_x-small">
+                <button onclick={searchVideos} class="slds-button slds-button_icon slds-button_icon-border-filled width-full" aria-pressed="false" title="Search">
+                    <lightning-icon icon-name="standard:search" alternative-text="search" size="medium" class="width-full"></lightning-icon>
+                </button>
+            </div>
+        </div>
+
+        <div class="slds-col slds-size_12-of-12">
+            <div class="slds-var-p-around_medium">
+                <template if:true={emptyResults}>
+                    <c-illustration-any></c-illustration-any>
+                </template>             
+                
+                <template if:false={emptyResults}>
+                    <c-video-search-save-button onsave={handleSaveResults}></c-video-search-save-button>
+                </template>
+
+                <c-video-search-results onsetempty={setEmpty}></c-video-search-results>
+            </div>
+        </div>
+    </div>
+</template>
